@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog - Andi Dafi</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;700;900&display=swap" rel="stylesheet">
+
+<style>
+body, html {
+    margin: 0; padding: 0;
+    width: 100%;
+    font-family: 'Outfit', 'Segoe UI', sans-serif;
+    overflow-x: hidden;
+}
+
+body {
+    background: linear-gradient(to top, #1a1a2e, #3a0ca3, #ff7e5f, #ffb347);
+    background-attachment: fixed;
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+/* === PARTIKEL === */
+#particles {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* === MATAHARI === */
+.sun {
+    position: fixed;
+    bottom: -8%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, #ffd27f 0%, #ff7e5f 35%, rgba(255,126,95,0.25) 60%, transparent 100%);
+    border-radius: 50%;
+    filter: blur(25px);
+    z-index: 1;
+    animation: sunPulse 5s ease-in-out infinite;
+}
+.sun-rays {
+    position: fixed;
+    bottom: -15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(255,210,127,0.12) 0%, transparent 45%);
+    border-radius: 50%;
+    z-index: 0;
+    animation: sunRaysPulse 7s ease-in-out infinite;
+}
+@keyframes sunPulse {
+    0%, 100% { opacity: 0.9; transform: translateX(-50%) scale(1); }
+    50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+}
+@keyframes sunRaysPulse {
+    0%, 100% { opacity: 0.4; transform: translateX(-50%) scale(1); }
+    50% { opacity: 0.7; transform: translateX(-50%) scale(1.15); }
+}
+
+/* === AWAN SENJA === */
+.sunset-cloud {
+    position: fixed;
+    background: rgba(255, 126, 95, 0.12);
+    border-radius: 100px;
+    filter: blur(12px);
+    z-index: 1;
+}
+.sunset-cloud::before, .sunset-cloud::after {
+    content: "";
+    position: absolute;
+    background: rgba(255, 179, 71, 0.08);
+    border-radius: 50%;
+}
+.sunset-cloud::before { width: 50%; height: 130%; top: -60%; left: 20%; }
+.sunset-cloud::after { width: 40%; height: 110%; top: -40%; right: 15%; }
+
+@keyframes driftCloud {
+    from { transform: translateX(-250px); }
+    to { transform: translateX(110vw); }
+}
+.sc1 { width: 180px; height: 38px; bottom: 22%; animation: driftCloud 50s linear infinite; }
+.sc2 { width: 260px; height: 48px; bottom: 34%; animation: driftCloud 72s 8s linear infinite; opacity: 0.7; }
+.sc3 { width: 140px; height: 32px; bottom: 16%; animation: driftCloud 58s 22s linear infinite; }
+
+/* === CARD === */
+.content {
+    position: relative;
+    z-index: 10;
+    max-width: 650px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.38);
+    padding: 28px;
+    border-radius: 25px;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    max-height: 88vh;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+    opacity: 0;
+    transform: translateY(40px) scale(0.97);
+    transition: opacity 1s, transform 1s;
+}
+.content.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+.content::after {
+    content: '';
+    position: absolute;
+    bottom: -30px; left: 15%; right: 15%;
+    height: 60px;
+    background: radial-gradient(ellipse, rgba(255,126,95,0.2) 0%, transparent 70%);
+    filter: blur(20px);
+    z-index: -1;
+}
+
+/* Scrollbar */
+.content::-webkit-scrollbar { width: 5px; }
+.content::-webkit-scrollbar-track { background: transparent; }
+.content::-webkit-scrollbar-thumb { background: rgba(255,179,71,0.25); border-radius: 10px; }
+.content::-webkit-scrollbar-thumb:hover { background: rgba(255,179,71,0.45); }
+
+/* === PROFILE === */
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.profile img {
+    width: 68px; height: 68px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ff7e5f;
+    box-shadow: 0 0 20px rgba(255,126,95,0.3);
+    transition: transform 0.4s, box-shadow 0.4s;
+}
+.profile img:hover {
+    transform: scale(1.1) rotate(3deg);
+    box-shadow: 0 0 35px rgba(255,126,95,0.5);
+}
+h1 { margin: 0; font-size: 22px; font-weight: 900; letter-spacing: 0.5px; }
+.profile .sub {
+    margin: 4px 0 0;
+    opacity: 0.5;
+    font-weight: 300;
+    font-size: 0.82rem;
+}
+
+/* === SECTION LABEL === */
+h3 {
+    margin: 26px 0 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #ffd27f;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+/* === KARTU KATEGORI === */
+.cards {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+}
+.card {
+    flex: 1;
+    min-width: 110px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    font-size: 0.82rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    position: relative;
+    overflow: hidden;
+}
+.card::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 0; height: 0;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.5s, height 0.5s;
+}
+.card:hover::before { width: 300px; height: 300px; }
+.card:hover {
+    background: rgba(255, 255, 255, 0.14);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+.card:active { transform: translateY(0) scale(0.97); }
+.card.active {
+    background: rgba(255, 126, 95, 0.18);
+    border-color: rgba(255, 126, 95, 0.25);
+    box-shadow: 0 4px 20px rgba(255,126,95,0.15);
+}
+
+/* === GRID MEDIA === */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+.grid img, .grid video {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 10px;
+    background: #000;
+    transition: all 0.4s;
+    border: 1px solid rgba(255,255,255,0.04);
+}
+.grid img:hover, .grid video:hover {
+    transform: scale(1.06);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+    border-color: rgba(255,179,71,0.25);
+    z-index: 2;
+    position: relative;
+}
+
+/* === EXPAND/COLLAPSE SMOOTH === */
+.expand {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.4s ease,
+                margin-top 0.4s ease;
+    margin-top: 0;
+}
+.expand.open {
+    max-height: 3000px;
+    opacity: 1;
+    margin-top: 14px;
+}
+
+/* === DAFTAR LAGU === */
+.song-list {
+    background: rgba(255,255,255,0.04);
+    border-radius: 14px;
+    padding: 8px;
+    border: 1px solid rgba(255,255,255,0.03);
+}
+.song {
+    padding: 13px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s, padding-left 0.3s;
+    border-radius: 8px;
+}
+.song:last-child { border: none; }
+.song:hover {
+    background: rgba(255, 179, 71, 0.08);
+    padding-left: 20px;
+}
+.song-title { font-weight: 500; font-size: 0.88rem; }
+.song-artist { font-size: 0.72rem; opacity: 0.4; font-weight: 300; }
+/* Equalizer icon kecil */
+.song-eq {
+    display: flex; gap: 2px; align-items: flex-end; height: 14px;
+}
+.song-eq span {
+    width: 2px; background: #ffd27f; border-radius: 1px;
+    animation: eqBounce 0.8s ease-in-out infinite alternate;
+}
+.song-eq span:nth-child(1) { height: 6px; animation-delay: 0s; }
+.song-eq span:nth-child(2) { height: 10px; animation-delay: 0.15s; }
+.song-eq span:nth-child(3) { height: 4px; animation-delay: 0.3s; }
+.song-eq span:nth-child(4) { height: 8px; animation-delay: 0.1s; }
+@keyframes eqBounce {
+    from { transform: scaleY(0.4); }
+    to { transform: scaleY(1); }
+}
+
+/* === TOMBOL KEMBALI === */
+.back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 28px;
+    padding: 14px;
+    background: linear-gradient(135deg, #ff7e5f, #ffb347);
+    color: white;
+    text-align: center;
+    border-radius: 14px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.88rem;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+}
+.back::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 0; height: 0;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.5s, height 0.5s;
+}
+.back:hover::before { width: 400px; height: 400px; }
+.back:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(255,126,95,0.4);
+}
+.back:active { transform: translateY(0) scale(0.97); }
+.back svg {
+    width: 16px; height: 16px;
+    fill: none; stroke: currentColor;
+    stroke-width: 2.5;
+    stroke-linecap: round; stroke-linejoin: round;
+    position: relative; z-index: 1;
+}
+.back span { position: relative; z-index: 1; }
+
+/* === RESPONSIVE === */
+@media (max-width: 500px) {
+    body { padding: 1rem; }
+    .content { padding: 20px 18px; border-radius: 20px; max-height: 92vh; }
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    .cards { flex-direction: column; }
+    .card { min-width: auto; }
+    .profile img { width: 56px; height: 56px; }
+    h1 { font-size: 19px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+</style>
+
+<script>
+function toggle(id) {
+    const menus = ['gaming', 'football', 'song', 'photo'];
+    const allCards = document.querySelectorAll('.card[onclick]');
+
+    menus.forEach(menuId => {
+        const el = document.getElementById(menuId);
+        if (menuId === id) {
+            const isOpen = el.classList.contains('open');
+            el.classList.toggle('open');
+            allCards.forEach(c => {
+                if (c.getAttribute('onclick') === `toggle('${id}')`) {
+                    c.classList.toggle('active', !isOpen);
+                } else {
+                    c.classList.remove('active');
+                }
+            });
+        } else {
+            el.classList.remove('open');
+        }
+    });
+}
+</script>
+
+</head>
+
+<body>
+
+<canvas id="particles"></canvas>
+
+<div class="sun-rays"></div>
+<div class="sun"></div>
+
+<div class="sunset-cloud sc1"></div>
+<div class="sunset-cloud sc2"></div>
+<div class="sunset-cloud sc3"></div>
+
+<div class="content" id="mainCard">
+
+    <div class="profile">
+        <img src="profil.jpeg" alt="Profil">
+        <div>
+            <h1>Andi Dafi</h1>
+            <p class="sub">Mahasiswa Pendidikan Komputer</p>
+        </div>
+    </div>
+
+    <h3>Karya Saya</h3>
+    <div class="cards">
+        <a href="https://mahasiswaindonesia.id/fenomena-mahasiswa-serba-instan/" target="_blank"
+           class="card" style="border-left: 3px solid #ff7e5f;">
+            <span style="position:relative;z-index:1">📝 Opini: Mahasiswa Instan</span>
+        </a>
+    </div>
+
+    <h3>Hobi</h3>
+    <div class="cards">
+        <div class="card" onclick="toggle('gaming')"><span style="position:relative;z-index:1">🎮 Gaming</span></div>
+        <div class="card" onclick="toggle('football')"><span style="position:relative;z-index:1">⚽ Watching Football</span></div>
+    </div>
+
+    <div id="gaming" class="expand">
+        <div class="grid">
+            <video src="egoparty.mp4" controls></video>
+            <video src="rehanplenger.mp4" controls></video>
+            <img src="img3.jpg" alt="Gaming">
+            <img src="img4.jpg" alt="Gaming">
+            <img src="img5.jpg" alt="Gaming">
+            <img src="img6.jpg" alt="Gaming">
+        </div>
+    </div>
+
+    <div id="football" class="expand">
+        <div class="grid">
+            <img src="nonton1.png" alt="Football">
+            <img src="bola1.jpg" alt="Football">
+            <img src="bola3.jpg" alt="Football">
+            <img src="bola4.jpg" alt="Football">
+            <img src="indo1.png" alt="Football">
+            <img src="indo2.png" alt="Football">
+        </div>
+    </div>
+
+    <h3>My Album</h3>
+    <div class="cards">
+        <div class="card" onclick="toggle('song')"><span style="position:relative;z-index:1">🎵 Lagu</span></div>
+        <div class="card" onclick="toggle('photo')"><span style="position:relative;z-index:1">📸 Foto</span></div>
+    </div>
+
+    <div id="song" class="expand">
+        <div class="song-list">
+            <div class="song">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="song-eq"><span></span><span></span><span></span><span></span></div>
+                    <span class="song-title">Message In A Bottle</span>
+                </div>
+                <span class="song-artist">Taylor Swift</span>
+            </div>
+            <div class="song">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="song-eq"><span></span><span></span><span></span><span></span></div>
+                    <span class="song-title">Night Changes</span>
+                </div>
+                <span class="song-artist">One Direction</span>
+            </div>
+            <div class="song">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="song-eq"><span></span><span></span><span></span><span></span></div>
+                    <span class="song-title">Pay Phone</span>
+                </div>
+                <span class="song-artist">Arctic Monkeys</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="photo" class="expand">
+        <div class="grid">
+            <img src="4trioparty.jpeg" alt="Foto">
+            <img src="bukber2024-.jpeg" alt="Foto">
+            <img src="wkwk.jpg" alt="Foto">
+            <img src="ego8.jpeg" alt="Foto">
+            <img src="ego2.jpeg" alt="Foto">
+            <img src="ego3.jpeg" alt="Foto">
+            <img src="gatau.jpeg" alt="Foto">
+            <img src="ego5.jpeg" alt="Foto">
+            <img src="egggg0.jpeg" alt="Foto">
+            <img src="profil.jpeg" alt="Foto">
+            <img src="gatau2.jpeg" alt="Foto">
+            <img src="plenger.jpeg" alt="Foto">
+        </div>
+    </div>
+
+    <a href="index.html" class="back">
+        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span>Kembali ke Beranda</span>
+    </a>
+</div>
+
+<script>
+/* === PARTIKEL BARA SENJA === */
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let particles = [];
+const PARTICLE_COUNT = 75;
+let mouseX = -1000, mouseY = -1000;
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+});
+
+class Ember {
+    constructor() { this.reset(true); }
+    reset(initial) {
+        this.x = Math.random() * canvas.width;
+        this.y = initial ? Math.random() * canvas.height : canvas.height + 10;
+        this.size = Math.random() * 2.2 + 0.4;
+        this.speedX = (Math.random() - 0.5) * 0.25;
+        this.speedY = -(Math.random() * 0.35 + 0.08);
+        this.baseOpacity = Math.random() * 0.5 + 0.15;
+        this.twinkleSpeed = Math.random() * 0.025 + 0.006;
+        this.twinkleOffset = Math.random() * Math.PI * 2;
+        const palette = [
+            [255, 179, 71],
+            [255, 126, 95],
+            [255, 210, 127],
+            [255, 155, 110],
+            [255, 200, 80]
+        ];
+        this.color = palette[Math.floor(Math.random() * palette.length)];
+        this.isBright = Math.random() > 0.88;
+        if (this.isBright) {
+            this.size = Math.random() * 1.8 + 1.8;
+            this.baseOpacity = 0.65;
+        }
+    }
+    update(time) {
+        this.x += this.speedX + Math.sin(time * 0.008 + this.twinkleOffset) * 0.12;
+        this.y += this.speedY;
+        const dx = this.x - mouseX;
+        const dy = this.y - mouseY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 110 && dist > 0) {
+            const force = (110 - dist) / 110 * 0.45;
+            this.x += (dx / dist) * force;
+            this.y += (dy / dist) * force;
+        }
+        if (this.x < -10) this.x = canvas.width + 10;
+        if (this.x > canvas.width + 10) this.x = -10;
+        if (this.y < -10) this.reset(false);
+        this.currentOpacity = this.baseOpacity * (0.5 + 0.5 * Math.sin(time * this.twinkleSpeed + this.twinkleOffset));
+    }
+    draw() {
+        const r = Math.max(0.1, this.size);
+        const [cr, cg, cb] = this.color;
+        if (this.isBright) {
+            const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, r * 3);
+            grad.addColorStop(0, `rgba(${cr},${cg},${cb},${this.currentOpacity})`);
+            grad.addColorStop(0.5, `rgba(${cr},${cg},${cb},${this.currentOpacity * 0.15})`);
+            grad.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, r * 3, 0, Math.PI * 2);
+            ctx.fillStyle = grad;
+            ctx.fill();
+        }
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${cr},${cg},${cb},${this.currentOpacity})`;
+        ctx.fill();
+    }
+}
+
+for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Ember());
+
+function drawConnections() {
+    for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 65) {
+                const alpha = (1 - dist / 65) * 0.04;
+                ctx.beginPath();
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.strokeStyle = `rgba(255,179,71,${alpha})`;
+                ctx.lineWidth = 0.4;
+                ctx.stroke();
+            }
+        }
+    }
+}
+
+let time = 0;
+function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    time++;
+    particles.forEach(p => { p.update(time); p.draw(); });
+    drawConnections();
+    requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+/* === CARD MASUK === */
+setTimeout(() => { document.getElementById('mainCard').classList.add('visible'); }, 300);
+</script>
+
+</body>
+</html>

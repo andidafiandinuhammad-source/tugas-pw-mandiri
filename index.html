@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beranda Portofolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%;
+            overflow-x: hidden;
+            font-family: 'Outfit', 'Segoe UI', sans-serif;
+            scroll-behavior: smooth;
+        }
+        body {
+            background: linear-gradient(to top, #4facfe 0%, #00f2fe 100%);
+            min-height: 100vh;
+        }
+
+        /* === PARTIKEL CANVAS === */
+        #particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* === SINAR MATAHARI === */
+        .sun-ray {
+            position: fixed;
+            top: -100px; right: -100px;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,224,102,0.4) 30%, transparent 70%);
+            filter: blur(30px);
+            z-index: 0;
+            animation: sunPulse 6s ease-in-out infinite;
+        }
+        @keyframes sunPulse {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.08); }
+        }
+
+        /* === AWAN === */
+        .cloud {
+            position: fixed;
+            background: #fff;
+            border-radius: 100px;
+            opacity: 0.9;
+            filter: blur(4px);
+            z-index: 1;
+        }
+        .cloud::before, .cloud::after {
+            content: "";
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+        }
+        .cloud::before { width: 50%; height: 140%; top: -70%; left: 15%; }
+        .cloud::after { width: 40%; height: 120%; top: -50%; right: 15%; }
+
+        @keyframes moveCloud {
+            from { transform: translateX(-300px); }
+            to { transform: translateX(110vw); }
+        }
+        .c1 { width: 120px; height: 40px; top: 15%; animation: moveCloud 45s linear infinite; }
+        .c2 { width: 200px; height: 60px; top: 35%; animation: moveCloud 80s linear infinite; opacity: 0.7; }
+        .c3 { width: 150px; height: 45px; top: 60%; animation: moveCloud 60s linear infinite; }
+
+        /* === HERO === */
+        .hero {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        /* === CARD === */
+        .card {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.22);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 30px;
+            box-shadow:
+                0 25px 50px rgba(0,0,0,0.12),
+                inset 0 1px 0 rgba(255,255,255,0.5);
+            max-width: 420px;
+            width: 100%;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(40px) scale(0.97);
+            transition: opacity 1s, transform 1s;
+        }
+        .card.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Glow di bawah card */
+        .card::after {
+            content: '';
+            position: absolute;
+            bottom: -40px; left: 10%; right: 10%;
+            height: 80px;
+            background: radial-gradient(ellipse, rgba(79,172,254,0.4) 0%, transparent 70%);
+            filter: blur(20px);
+            z-index: -1;
+        }
+
+        /* === TOMBOL === */
+        .btn-theme {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem 1.5rem;
+            border-radius: 18px;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-theme::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        .btn-theme:hover::before {
+            width: 300px; height: 300px;
+        }
+        .btn-theme:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        .btn-theme:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .btn-blog { background: linear-gradient(45deg, #ff512f, #dd2476); }
+        .mini-sun-senja {
+            position: absolute; right: 40px; bottom: -10px;
+            width: 30px; height: 30px; background: #ffbd39;
+            border-radius: 50%; box-shadow: 0 0 15px #ff512f;
+            transition: transform 0.4s;
+        }
+        .btn-blog:hover .mini-sun-senja { transform: scale(1.2); }
+
+        .btn-kontak { background: linear-gradient(45deg, #0f0c29, #302b63, #24243e); }
+        .mini-moon {
+            position: absolute; right: 45px; top: 10px;
+            width: 15px; height: 15px; background: #f1f5f9;
+            border-radius: 50%; box-shadow: 0 0 10px #fff;
+            transition: transform 0.4s;
+        }
+        .btn-kontak:hover .mini-moon { transform: scale(1.3); }
+        .mini-star {
+            position: absolute; background: white;
+            width: 2px; height: 2px; border-radius: 50%;
+            animation: blink 1s infinite alternate;
+        }
+
+        .btn-cv { background: linear-gradient(45deg, #2980b9, #6dd5fa, #ffffff); color: #0f172a !important; }
+        .mini-sun-siang {
+            position: absolute; right: 40px; top: 10px;
+            width: 20px; height: 20px; background: #f9d71c;
+            border-radius: 50%; box-shadow: 0 0 15px #f9d71c;
+            transition: transform 0.4s;
+        }
+        .btn-cv:hover .mini-sun-siang { transform: scale(1.2) rotate(20deg); }
+
+        @keyframes blink { from { opacity: 0.2; } to { opacity: 1; } }
+
+        /* === SCROLL INDICATOR === */
+        .scroll-hint {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.65rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            z-index: 5;
+            opacity: 0;
+            animation: fadeUp2 1s 1.5s forwards;
+        }
+        .scroll-line {
+            width: 1px; height: 36px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.6), transparent);
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 0.3; transform: scaleY(0.5); }
+            50% { opacity: 1; transform: scaleY(1); }
+        }
+        @keyframes fadeUp2 {
+            from { opacity: 0; transform: translateX(-50%) translateY(15px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* === SECTION BAWAH === */
+        .bottom-section {
+            position: relative;
+            z-index: 2;
+            padding: 4rem 2rem 3rem;
+            text-align: center;
+        }
+        .quote-text {
+            max-width: 500px;
+            margin: 0 auto;
+            font-weight: 200;
+            font-size: 1.15rem;
+            color: rgba(255,255,255,0.85);
+            line-height: 1.8;
+            letter-spacing: 0.5px;
+        }
+        .quote-text strong {
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* Divider garis */
+        .divider {
+            width: 60px; height: 2px;
+            background: rgba(255,255,255,0.35);
+            margin: 3rem auto;
+            border-radius: 2px;
+        }
+
+        /* Footer */
+        .site-footer {
+            position: relative;
+            z-index: 2;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.15);
+        }
+        .site-footer p {
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* === REVEAL === */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s, transform 0.8s;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* === STATUS DOT === */
+        .status-dot {
+            animation: statusPulse 2s ease-in-out infinite;
+        }
+        @keyframes statusPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); }
+            50% { box-shadow: 0 0 0 6px rgba(74,222,128,0); }
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 480px) {
+            .card { padding: 2rem 1.5rem; border-radius: 24px; }
+            .btn-theme { padding: 1rem 1.2rem; font-size: 0.9rem; }
+            .cursor-dot, .cursor-ring { display: none; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="p-4">
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <!-- Partikel -->
+    <canvas id="particles"></canvas>
+
+    <!-- Langit -->
+    <div class="sun-ray"></div>
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="card" id="mainCard">
+
+            <!-- Profil -->
+            <div class="relative w-24 h-24 mx-auto mb-6">
+                <img src="profil.jpeg" alt="Profile"
+                     class="w-full h-full rounded-full object-cover border-4 border-white shadow-lg">
+                <div class="status-dot absolute bottom-1 right-1 w-5 h-5 bg-green-400 rounded-full border-2 border-white"></div>
+            </div>
+
+            <h1 class="text-3xl font-extrabold text-white mb-2 drop-shadow-md" style="font-family:'Outfit',sans-serif;">Hello!</h1>
+            <p class="text-white/80 mb-8 font-medium text-sm">Mau kenal lebih jauh? Pilih menu di bawah ya.</p>
+
+            <!-- Tombol Navigasi -->
+            <div class="space-y-4">
+                <a href="blog.html" class="btn-theme btn-theme btn-blog block">
+                    <span>📰 Blog</span>
+                    <div class="mini-sun-senja"></div>
+                    <span class="text-lg relative z-10">➜</span>
+                </a>
+
+                <a href="kontak.html" class="btn-theme btn-kontak block">
+                    <span>📧 Kontak Saya</span>
+                    <div class="mini-moon"></div>
+                    <div class="mini-star" style="right:70px; top:15px;"></div>
+                    <div class="mini-star" style="right:30px; bottom:15px; animation-delay:0.5s;"></div>
+                    <span class="text-lg relative z-10">➜</span>
+                </a>
+
+                <a href="cv.html" class="btn-theme btn-cv block">
+                    <span>📄 Curriculum Vitae</span>
+                    <div class="mini-sun-siang"></div>
+                    <div class="absolute right-[65px] top-[25px] w-6 h-2 bg-white/60 rounded-full blur-[1px]"></div>
+                    <span class="text-lg relative z-10">➜</span>
+                </a>
+            </div>
+
+            <p class="mt-10 text-[10px] text-white/40 uppercase tracking-[0.2em]">
+                &copy; 2026 Crafted by Dafi
+            </p>
+        </div>
+
+        <!-- Scroll hint -->
+        <div class="scroll-hint">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Section Bawah -->
+    <section class="bottom-section">
+        <div class="divider reveal"></div>
+        <p class="quote-text reveal">
+            Setiap proyek dimulai dari <strong>langkah kecil</strong>.<br>
+            Terima kasih sudah mampir — <strong>kenali saya lebih dalam</strong> melalui halaman di atas.
+        </p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <p>Dafi &mdash; Portofolio</p>
+    </footer>
+
+    <script>
+        /* === CUSTOM CURSOR === */
+        const dot = document.getElementById('cursorDot');
+        const ring = document.getElementById('cursorRing');
+        let mouseX = 0, mouseY = 0;
+        let ringX = 0, ringY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            dot.style.left = mouseX - 4 + 'px';
+            dot.style.top = mouseY - 4 + 'px';
+        });
+
+        // Ring mengikuti dengan delay halus
+        function animateCursor() {
+            ringX += (mouseX - ringX) * 0.12;
+            ringY += (mouseY - ringY) * 0.12;
+            ring.style.left = ringX + 'px';
+            ring.style.top = ringY + 'px';
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Efek hover pada elemen interaktif
+        document.querySelectorAll('a, .btn-theme').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                ring.style.width = '60px';
+                ring.style.height = '60px';
+                ring.style.borderColor = 'rgba(255,255,255,0.3)';
+            });
+            el.addEventListener('mouseleave', () => {
+                ring.style.width = '40px';
+                ring.style.height = '40px';
+                ring.style.borderColor = 'rgba(255,255,255,0.7)';
+            });
+        });
+
+        /* === PARTIKEL LANGIT === */
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const PARTICLE_COUNT = 60;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2.5 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.25;
+                this.speedY = (Math.random() - 0.5) * 0.15 - 0.1; // sedikit naik
+                this.opacity = Math.random() * 0.5 + 0.15;
+                this.twinkleSpeed = Math.random() * 0.02 + 0.005;
+                this.twinkleOffset = Math.random() * Math.PI * 2;
+            }
+            update(time) {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                // Interaksi mouse — partikel perlahan menjauh
+                const dx = this.x - mouseX;
+                const dy = this.y - mouseY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 130 && dist > 0) {
+                    const force = (130 - dist) / 130 * 0.4;
+                    this.x += (dx / dist) * force;
+                    this.y += (dy / dist) * force;
+                }
+
+                // Bungkus di tepi
+                if (this.x < -10) this.x = canvas.width + 10;
+                if (this.x > canvas.width + 10) this.x = -10;
+                if (this.y < -10) this.y = canvas.height + 10;
+                if (this.y > canvas.height + 10) this.y = -10;
+
+                // Efek berkedip halus
+                this.currentOpacity = this.opacity * (0.6 + 0.4 * Math.sin(time * this.twinkleSpeed + this.twinkleOffset));
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, Math.max(0.1, this.size), 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.currentOpacity})`;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            particles.push(new Particle());
+        }
+
+        // Garis koneksi tipis antar partikel dekat
+        function drawConnections() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 100) {
+                        const alpha = (1 - dist / 100) * 0.08;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        let time = 0;
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            time++;
+            particles.forEach(p => {
+                p.update(time);
+                p.draw();
+            });
+            drawConnections();
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        /* === PARALLAX CARD === */
+        const card = document.getElementById('mainCard');
+        document.addEventListener('mousemove', (e) => {
+            const cx = window.innerWidth / 2;
+            const cy = window.innerHeight / 2;
+            const dx = (e.clientX - cx) / cx;
+            const dy = (e.clientY - cy) / cy;
+            card.style.transform = `translateY(0) scale(1) perspective(800px) rotateY(${dx * 3}deg) rotateX(${-dy * 3}deg)`;
+        });
+        // Reset saat mouse keluar jendela
+        document.addEventListener('mouseleave', () => {
+            card.style.transition = 'transform 0.5s';
+            card.style.transform = 'translateY(0) scale(1) perspective(800px) rotateY(0deg) rotateX(0deg)';
+            setTimeout(() => { card.style.transition = ''; }, 500);
+        });
+
+        /* === SCROLL REVEAL === */
+        // Card muncul saat halaman load
+        setTimeout(() => { card.classList.add('visible'); }, 300);
+
+        // Elemen reveal saat di-scroll
+        const revealEls = document.querySelectorAll('.reveal');
+        const revealObs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+        revealEls.forEach(el => revealObs.observe(el));
+    </script>
+</body>
+</html>

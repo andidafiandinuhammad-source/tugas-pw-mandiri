@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kontak - Andi Dafi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        html, body {
+            margin: 0; padding: 0;
+            width: 100%;
+            overflow-x: hidden;
+            font-family: 'Outfit', 'Segoe UI', sans-serif;
+            scroll-behavior: smooth;
+        }
+        body {
+            background: linear-gradient(to top, #020617, #0f172a, #1e3a8a);
+            background-attachment: fixed;
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* === PARTIKEL CANVAS === */
+        #particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* === BULAN === */
+        .moon {
+            position: fixed;
+            top: 8%; right: 10%;
+            width: 110px; height: 110px;
+            background: radial-gradient(circle at 35% 35%, #ffffff 0%, #dbeafe 40%, #93c5fd 70%, transparent 100%);
+            border-radius: 50%;
+            filter: blur(1.5px);
+            box-shadow:
+                0 0 40px rgba(147, 197, 253, 0.4),
+                0 0 100px rgba(59, 130, 246, 0.2),
+                0 0 200px rgba(30, 58, 138, 0.15);
+            z-index: 1;
+            animation: moonGlow 5s ease-in-out infinite;
+        }
+        /* Kawah bulan */
+        .moon::before {
+            content: '';
+            position: absolute;
+            width: 20px; height: 20px;
+            background: rgba(147, 197, 253, 0.3);
+            border-radius: 50%;
+            top: 30%; left: 25%;
+        }
+        .moon::after {
+            content: '';
+            position: absolute;
+            width: 14px; height: 14px;
+            background: rgba(147, 197, 253, 0.25);
+            border-radius: 50%;
+            top: 55%; left: 55%;
+        }
+        @keyframes moonGlow {
+            0%, 100% { box-shadow: 0 0 40px rgba(147,197,253,0.4), 0 0 100px rgba(59,130,246,0.2); }
+            50% { box-shadow: 0 0 60px rgba(147,197,253,0.5), 0 0 140px rgba(59,130,246,0.3); }
+        }
+
+        /* === BINTANG JATUH === */
+        .shooting-star {
+            position: fixed;
+            width: 2px; height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            z-index: 0;
+            opacity: 0;
+        }
+        .shooting-star::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 80px; height: 1px;
+            background: linear-gradient(to left, rgba(255,255,255,0.8), transparent);
+            transform-origin: left center;
+            transform: rotate(0deg);
+        }
+        .shooting-star:nth-child(1) { top: 12%; left: 70%; animation: shoot 6s 1s linear infinite; }
+        .shooting-star:nth-child(2) { top: 25%; left: 40%; animation: shoot 8s 4s linear infinite; }
+        .shooting-star:nth-child(3) { top: 8%; left: 85%; animation: shoot 10s 7s linear infinite; }
+
+        @keyframes shoot {
+            0% { opacity: 0; transform: translate(0, 0) rotate(-35deg); }
+            2% { opacity: 1; }
+            8% { opacity: 0; transform: translate(-300px, 180px) rotate(-35deg); }
+            100% { opacity: 0; }
+        }
+
+        /* === AURORA / NEBULA HALUS === */
+        .nebula {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            pointer-events: none;
+        }
+        .nebula-1 {
+            width: 400px; height: 300px;
+            background: radial-gradient(ellipse, rgba(59,130,246,0.08), transparent 70%);
+            top: 30%; left: -5%;
+            animation: nebulaFloat 12s ease-in-out infinite;
+        }
+        .nebula-2 {
+            width: 350px; height: 250px;
+            background: radial-gradient(ellipse, rgba(139,92,246,0.06), transparent 70%);
+            bottom: 10%; right: -5%;
+            animation: nebulaFloat 15s ease-in-out infinite reverse;
+        }
+        @keyframes nebulaFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -20px) scale(1.1); }
+        }
+
+        /* === HERO === */
+        .hero {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        /* === CARD === */
+        .content {
+            position: relative;
+            z-index: 10;
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            padding: 2.5rem 2rem;
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow:
+                0 25px 60px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            opacity: 0;
+            transform: translateY(40px) scale(0.97);
+            transition: opacity 1s, transform 1s;
+        }
+        .content.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        /* Glow di bawah card */
+        .content::after {
+            content: '';
+            position: absolute;
+            bottom: -35px; left: 12%; right: 12%;
+            height: 70px;
+            background: radial-gradient(ellipse, rgba(59,130,246,0.25) 0%, transparent 70%);
+            filter: blur(20px);
+            z-index: -1;
+        }
+
+        /* Ikon bulan kecil di atas judul */
+        .card-moon-icon {
+            width: 48px; height: 48px;
+            margin: 0 auto 1.2rem;
+            background: radial-gradient(circle at 35% 35%, #fff 0%, #93c5fd 60%, transparent 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(147,197,253,0.4);
+            animation: moonIconSpin 20s linear infinite;
+        }
+        @keyframes moonIconSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .content h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #ffffff 30%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .content .subtitle {
+            font-size: 0.85rem;
+            font-weight: 300;
+            color: rgba(255,255,255,0.45);
+            margin-bottom: 2rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* === TOMBOL KONTAK === */
+        .contact-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .btn-contact {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        /* Ripple effect */
+        .btn-contact::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
+            background: rgba(255,255,255,0.12);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        .btn-contact:hover::before {
+            width: 400px; height: 400px;
+        }
+        .btn-contact:active {
+            transform: translateY(0) scale(0.97) !important;
+        }
+
+        /* WA */
+        .btn-wa { background: rgba(37, 211, 102, 0.15); }
+        .btn-wa:hover {
+            background: #25d366;
+            box-shadow: 0 8px 30px rgba(37, 211, 102, 0.4);
+            transform: translateY(-3px);
+        }
+
+        /* IG */
+        .btn-ig { background: rgba(225, 48, 108, 0.15); }
+        .btn-ig:hover {
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            box-shadow: 0 8px 30px rgba(225, 48, 108, 0.4);
+            transform: translateY(-3px);
+        }
+
+        /* Email */
+        .btn-email { background: rgba(59, 130, 246, 0.15); }
+        .btn-email:hover {
+            background: #3b82f6;
+            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4);
+            transform: translateY(-3px);
+        }
+
+        /* Ikon platform */
+        .platform-icon {
+            position: relative;
+            z-index: 1;
+            width: 28px; height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            flex-shrink: 0;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .btn-contact:hover .platform-icon {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.1);
+        }
+        .platform-icon svg {
+            width: 16px; height: 16px;
+            fill: currentColor;
+        }
+
+        /* === TOMBOL KEMBALI === */
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 2.5rem;
+            color: rgba(255, 255, 255, 0.35);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+            transition: color 0.3s, transform 0.3s;
+        }
+        .btn-back:hover {
+            color: rgba(255,255,255,0.8);
+            transform: translateX(-4px);
+        }
+        .btn-back svg {
+            width: 14px; height: 14px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* === SCROLL HINT === */
+        .scroll-hint {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255,255,255,0.3);
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            z-index: 5;
+            opacity: 0;
+            animation: fadeUpHint 1s 1.5s forwards;
+        }
+        .scroll-line {
+            width: 1px; height: 36px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 0.3; transform: scaleY(0.5); }
+            50% { opacity: 1; transform: scaleY(1); }
+        }
+        @keyframes fadeUpHint {
+            from { opacity: 0; transform: translateX(-50%) translateY(15px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* === SECTION BAWAH === */
+        .bottom-section {
+            position: relative;
+            z-index: 2;
+            padding: 4rem 2rem 3rem;
+            text-align: center;
+        }
+        .divider {
+            width: 50px; height: 1px;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 2.5rem;
+        }
+        .quote-text {
+            max-width: 460px;
+            margin: 0 auto;
+            font-weight: 200;
+            font-size: 1.05rem;
+            color: rgba(255,255,255,0.55);
+            line-height: 1.8;
+            letter-spacing: 0.3px;
+        }
+        .quote-text strong {
+            font-weight: 600;
+            color: rgba(147, 197, 253, 0.9);
+        }
+
+        /* === FOOTER === */
+        .site-footer {
+            position: relative;
+            z-index: 2;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .site-footer p {
+            font-size: 0.6rem;
+            color: rgba(255,255,255,0.2);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* === REVEAL === */
+        .reveal {
+            opacity: 0;
+            transform: translateY(25px);
+            transition: opacity 0.8s, transform 0.8s;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 480px) {
+            .content { padding: 2rem 1.5rem; border-radius: 22px; }
+            .content h1 { font-size: 1.8rem; }
+            .moon { width: 70px; height: 70px; top: 5%; right: 8%; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="p-4">
+
+    <!-- Partikel -->
+    <canvas id="particles"></canvas>
+
+    <!-- Bulan -->
+    <div class="moon"></div>
+
+    <!-- Bintang jatuh -->
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+
+    <!-- Nebula -->
+    <div class="nebula nebula-1"></div>
+    <div class="nebula nebula-2"></div>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="content" id="mainCard">
+
+            <div class="card-moon-icon"></div>
+
+            <h1>Kontak</h1>
+            <p class="subtitle">Pilih cara terbaik untuk terhubung</p>
+
+            <div class="contact-buttons">
+                <!-- WhatsApp -->
+                <a href="https://wa.me/6282154063127" target="_blank" class="btn-contact btn-wa">
+                    <div class="platform-icon">
+                        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    </div>
+                    <span style="position:relative;z-index:1">WhatsApp</span>
+                </a>
+
+                <!-- Instagram -->
+                <a href="https://instagram.com/dappp42" target="_blank" class="btn-contact btn-ig">
+                    <div class="platform-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                    </div>
+                    <span style="position:relative;z-index:1">Instagram</span>
+                </a>
+
+                <!-- Email -->
+                <a href="mailto:andidafiandinuhammad@gmail.com" class="btn-contact btn-email">
+                    <div class="platform-icon">
+                        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                    </div>
+                    <span style="position:relative;z-index:1">Email / Gmail</span>
+                </a>
+            </div>
+
+            <a href="index.html" class="btn-back">
+                <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                Kembali ke Beranda
+            </a>
+        </div>
+
+        <div class="scroll-hint">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Section Bawah -->
+    <section class="bottom-section">
+        <div class="divider reveal"></div>
+        <p class="quote-text reveal">
+            Jangan ragu untuk <strong>menyapa</strong>.<br>
+            Setiap percakapan dimulai dari <strong>langkah pertama</strong>.
+        </p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <p>Dafi &mdash; Kontak</p>
+    </footer>
+
+    <script>
+        /* === PARTIKEL BINTANG === */
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const PARTICLE_COUNT = 90;
+        let mouseX = -1000, mouseY = -1000;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        class Star {
+            constructor() { this.reset(true); }
+            reset(initial) {
+                this.x = Math.random() * canvas.width;
+                this.y = initial ? Math.random() * canvas.height : -5;
+                this.size = Math.random() * 2 + 0.3;
+                this.speedX = (Math.random() - 0.5) * 0.1;
+                this.speedY = Math.random() * 0.15 + 0.02;
+                this.baseOpacity = Math.random() * 0.6 + 0.2;
+                this.twinkleSpeed = Math.random() * 0.03 + 0.008;
+                this.twinkleOffset = Math.random() * Math.PI * 2;
+                // Beberapa bintang lebih terang/biru
+                this.isBright = Math.random() > 0.85;
+                if (this.isBright) {
+                    this.size = Math.random() * 1.5 + 1.5;
+                    this.baseOpacity = Math.random() * 0.3 + 0.7;
+                }
+            }
+            update(time) {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                // Interaksi mouse — bintang menjauh pelan
+                const dx = this.x - mouseX;
+                const dy = this.y - mouseY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 120 && dist > 0) {
+                    const force = (120 - dist) / 120 * 0.6;
+                    this.x += (dx / dist) * force;
+                    this.y += (dy / dist) * force;
+                }
+
+                // Bungkus
+                if (this.x < -10) this.x = canvas.width + 10;
+                if (this.x > canvas.width + 10) this.x = -10;
+                if (this.y > canvas.height + 10) this.reset(false);
+
+                this.currentOpacity = this.baseOpacity * (0.5 + 0.5 * Math.sin(time * this.twinkleSpeed + this.twinkleOffset));
+            }
+            draw() {
+                const r = Math.max(0.1, this.size);
+                if (this.isBright) {
+                    // Bintang terang punya glow
+                    const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, r * 3);
+                    grad.addColorStop(0, `rgba(180, 210, 255, ${this.currentOpacity})`);
+                    grad.addColorStop(0.4, `rgba(120, 160, 255, ${this.currentOpacity * 0.3})`);
+                    grad.addColorStop(1, `rgba(120, 160, 255, 0)`);
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, r * 3, 0, Math.PI * 2);
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+                }
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(220, 230, 255, ${this.currentOpacity})`;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            particles.push(new Star());
+        }
+
+        // Garis koneksi tipis
+        function drawConnections() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 80) {
+                        const alpha = (1 - dist / 80) * 0.06;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(140, 180, 255, ${alpha})`;
+                        ctx.lineWidth = 0.4;
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        let time = 0;
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            time++;
+            particles.forEach(p => { p.update(time); p.draw(); });
+            drawConnections();
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        /* === PARALLAX CARD === */
+        const card = document.getElementById('mainCard');
+        document.addEventListener('mousemove', (e) => {
+            const cx = window.innerWidth / 2;
+            const cy = window.innerHeight / 2;
+            const dx = (e.clientX - cx) / cx;
+            const dy = (e.clientY - cy) / cy;
+            card.style.transform = `translateY(0) scale(1) perspective(800px) rotateY(${dx * 4}deg) rotateX(${-dy * 4}deg)`;
+        });
+        document.addEventListener('mouseleave', () => {
+            card.style.transition = 'transform 0.6s';
+            card.style.transform = 'translateY(0) scale(1) perspective(800px) rotateY(0deg) rotateX(0deg)';
+            setTimeout(() => { card.style.transition = ''; }, 600);
+        });
+
+        /* === CARD MASUK ANIMASI === */
+        setTimeout(() => { card.classList.add('visible'); }, 300);
+
+        /* === SCROLL REVEAL === */
+        const revealEls = document.querySelectorAll('.reveal');
+        const revealObs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+        revealEls.forEach(el => revealObs.observe(el));
+    </script>
+</body>
+</html>
